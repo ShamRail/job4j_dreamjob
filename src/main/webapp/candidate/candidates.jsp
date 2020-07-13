@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="ru.job4j.dreamjob.store.Store" %>
 <%@ page import="ru.job4j.dreamjob.model.Candidate" %>
@@ -28,16 +30,16 @@
     <div class="row">
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/posts.do">Вакансии</a>
+                <a class="nav-link" href='<c:url value="/posts.do" />'>Вакансии</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do">Кандидаты</a>
+                <a class="nav-link" href='<c:url value="/candidates.do" />'>Кандидаты</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/posts.do?edit=true">Добавить вакансию</a>
+                <a class="nav-link" href='<c:url value="/posts.do?edit=true" />'>Добавить вакансию</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do?edit=true">Добавить кандидата</a>
+                <a class="nav-link" href='<c:url value="/candidates.do?edit=true" />'>Добавить кандидата</a>
             </li>
         </ul>
     </div>
@@ -49,21 +51,21 @@
             <div class="card-body">
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th scope="col">Названия</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">Названия</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <% for (Candidate can : (Collection<Candidate>) request.getAttribute("candidates")) { %>
-                    <tr>
-                        <td>
-                            <a href="<%=request.getContextPath()%>/candidates.do?edit=true&id=<%=can.getId()%>">
-                                <i class="fa fa-edit mr-3"></i>
-                            </a>
-                            <%= can.getName() %>
-                        </td>
-                    </tr>
-                    <% } %>
+                        <c:forEach var="can" items="${candidates}">
+                            <tr>
+                                <td>
+                                    <a href='<c:url value="/candidates.do?edit=true&id=${can.id}"/>'>
+                                        <i class="fa fa-edit mr-3"></i>
+                                    </a>
+                                    <c:out value="${can.name}"/>
+                                </td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>

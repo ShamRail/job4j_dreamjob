@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!doctype html>
 <html lang="en">
@@ -26,16 +27,16 @@
     <div class="row">
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/posts.do">Вакансии</a>
+                <a class="nav-link" href='<c:url value="/posts.do" />'>Вакансии</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do">Кандидаты</a>
+                <a class="nav-link" href='<c:url value="/candidates.do" />'>Кандидаты</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/posts.do?edit=true">Добавить вакансию</a>
+                <a class="nav-link" href='<c:url value="/posts.do?edit=true" />'>Добавить вакансию</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do?edit=true">Добавить кандидата</a>
+                <a class="nav-link" href='<c:url value="/candidates.do?edit=true" />'>Добавить кандидата</a>
             </li>
         </ul>
     </div>
