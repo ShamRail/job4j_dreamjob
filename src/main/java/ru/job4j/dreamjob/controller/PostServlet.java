@@ -1,6 +1,7 @@
 package ru.job4j.dreamjob.controller;
 
 import ru.job4j.dreamjob.model.Post;
+import ru.job4j.dreamjob.store.memory.PostMemStore;
 import ru.job4j.dreamjob.store.Store;
 
 import javax.servlet.ServletException;
@@ -11,14 +12,14 @@ import java.io.IOException;
 
 public class PostServlet extends HttpServlet {
 
-    private final Store store = Store.instOf();
+    private final Store<Post> store = PostMemStore.instOf();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String edit = req.getParameter("edit");
         String path = edit != null ? "/post/edit.jsp" : "/post/posts.jsp";
         if (edit == null) {
-            req.setAttribute("posts", Store.instOf().findAllPosts());
+            req.setAttribute("posts", PostMemStore.instOf().findAll());
         }
         req.getRequestDispatcher(path).forward(req, resp);
     }
@@ -31,7 +32,7 @@ public class PostServlet extends HttpServlet {
                 req.getParameter("name"),
                 req.getParameter("description")
         );
-        store.savePost(post);
+        store.saveOrUpdate(post);
         resp.sendRedirect(req.getContextPath() + "/posts.do");
     }
 }

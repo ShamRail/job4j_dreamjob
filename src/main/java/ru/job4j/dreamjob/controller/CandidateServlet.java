@@ -1,6 +1,7 @@
 package ru.job4j.dreamjob.controller;
 
 import ru.job4j.dreamjob.model.Candidate;
+import ru.job4j.dreamjob.store.memory.CandidateMemStore;
 import ru.job4j.dreamjob.store.Store;
 
 import javax.servlet.ServletException;
@@ -11,14 +12,14 @@ import java.io.IOException;
 
 public class CandidateServlet extends HttpServlet {
 
-    private static final Store store = Store.instOf();
+    private static final Store<Candidate> store = CandidateMemStore.instOf();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String edit = req.getParameter("edit");
         String path = edit != null ? "/candidate/edit.jsp" : "/candidate/candidates.jsp";
         if (edit == null) {
-            req.setAttribute("candidates", store.findAllCandidates());
+            req.setAttribute("candidates", store.findAll());
         }
         req.getRequestDispatcher(path).forward(req, resp);
     }
@@ -26,7 +27,7 @@ public class CandidateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
-        store.saveCandidate(new Candidate(
+        store.saveOrUpdate(new Candidate(
                 Integer.parseInt(req.getParameter("id")),
                 req.getParameter("name"),
                 req.getParameter("memo")
