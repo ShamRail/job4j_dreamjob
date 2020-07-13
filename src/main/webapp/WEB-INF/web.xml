@@ -6,6 +6,7 @@
          version="2.4">
 
     <display-name>Archetype Created Web Application</display-name>
+
     <servlet>
         <servlet-name>PostServlet</servlet-name>
         <servlet-class>ru.job4j.dreamjob.controller.PostServlet</servlet-class>
@@ -13,6 +14,15 @@
     <servlet-mapping>
         <servlet-name>PostServlet</servlet-name>
         <url-pattern>/post/save</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CandidateServlet</servlet-name>
+        <servlet-class>ru.job4j.dreamjob.controller.CandidateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CandidateServlet</servlet-name>
+        <url-pattern>/candidate/save</url-pattern>
     </servlet-mapping>
 
 </web-app>

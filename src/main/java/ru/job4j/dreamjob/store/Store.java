@@ -13,6 +13,8 @@ public class Store {
 
     private static final AtomicInteger POST_ID = new AtomicInteger(1);
 
+    private static final AtomicInteger CANDIDATE_ID = new AtomicInteger(1);
+
     private static final Store INST = new Store();
 
     private Map<Integer, Post> posts = new ConcurrentHashMap<>();
@@ -25,9 +27,9 @@ public class Store {
         posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Middle Java Job", "Some description ...", LocalDateTime.now().minusDays(10)));
         posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Senior Java Job", "Some description ...", LocalDateTime.now().minusDays(15)));
 
-        candidates.put(1, new Candidate(1, "Junior Java"));
-        candidates.put(2, new Candidate(2, "Middle Java"));
-        candidates.put(3, new Candidate(3, "Senior Java"));
+        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Junior Java"));
+        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Middle Java"));
+        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Senior Java"));
     }
 
     public static Store instOf() {
@@ -46,5 +48,11 @@ public class Store {
         post.setId(POST_ID.incrementAndGet());
         posts.put(POST_ID.get(), post);
     }
+
+    public void saveCandidate(Candidate candidate) {
+        candidate.setId(CANDIDATE_ID.incrementAndGet());
+        candidates.put(candidate.getId(), candidate);
+    }
+
 
 }

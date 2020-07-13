@@ -8,9 +8,16 @@ public class Candidate {
 
     private String name;
 
+    private String memo;
+
     public Candidate(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Candidate(String name, String memo) {
+        this.name = name;
+        this.memo = memo;
     }
 
     public int getId() {
@@ -27,6 +34,14 @@ public class Candidate {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     @Override
