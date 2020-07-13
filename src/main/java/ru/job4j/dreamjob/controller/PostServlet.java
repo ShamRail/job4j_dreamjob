@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static java.time.LocalDateTime.now;
-
 public class PostServlet extends HttpServlet {
 
     private final Store store = Store.instOf();
@@ -17,11 +15,12 @@ public class PostServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
-        store.savePost(new Post(
+        Post post = new Post(
+                Integer.parseInt(req.getParameter("id")),
                 req.getParameter("name"),
-                req.getParameter("description"),
-                now()
-        ));
+                req.getParameter("description")
+        );
+        store.savePost(post);
         resp.sendRedirect(req.getContextPath() + "/post/posts.jsp");
     }
 }

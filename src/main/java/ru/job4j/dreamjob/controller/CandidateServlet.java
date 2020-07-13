@@ -16,6 +16,7 @@ public class CandidateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         store.saveCandidate(new Candidate(
+                Integer.parseInt(req.getParameter("id")),
                 req.getParameter("name"),
                 req.getParameter("memo")
         ));

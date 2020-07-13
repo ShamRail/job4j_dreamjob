@@ -3,7 +3,6 @@ package ru.job4j.dreamjob.store;
 import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.model.Post;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,13 +22,13 @@ public class Store {
 
     private Store() {
 
-        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Junior Java Job", "Some description ...", LocalDateTime.now().minusDays(1)));
-        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Middle Java Job", "Some description ...", LocalDateTime.now().minusDays(10)));
-        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Senior Java Job", "Some description ...", LocalDateTime.now().minusDays(15)));
+        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Junior Java Job", "Some description ..."));
+        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Middle Java Job", "Some description ..."));
+        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Senior Java Job", "Some description ..."));
 
-        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Junior Java"));
-        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Middle Java"));
-        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Senior Java"));
+        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Junior Java", "memo"));
+        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Middle Java", "memo"));
+        candidates.put(CANDIDATE_ID.incrementAndGet(), new Candidate(CANDIDATE_ID.get(), "Senior Java", "memo"));
     }
 
     public static Store instOf() {
@@ -45,14 +44,25 @@ public class Store {
     }
 
     public void savePost(Post post) {
-        post.setId(POST_ID.incrementAndGet());
-        posts.put(POST_ID.get(), post);
+        if (post.getId() == 0) {
+            post.setId(POST_ID.incrementAndGet());
+        }
+        posts.put(post.getId(), post);
+    }
+
+    public Post findPostById(int id) {
+        return posts.get(id);
     }
 
     public void saveCandidate(Candidate candidate) {
-        candidate.setId(CANDIDATE_ID.incrementAndGet());
+        if (candidate.getId() == 0) {
+            candidate.setId(CANDIDATE_ID.incrementAndGet());
+        }
         candidates.put(candidate.getId(), candidate);
     }
 
 
+    public Candidate findCandidateById(int id) {
+        return candidates.get(id);
+    }
 }
