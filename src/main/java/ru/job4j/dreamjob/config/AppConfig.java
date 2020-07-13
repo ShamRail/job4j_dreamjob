@@ -1,7 +1,7 @@
 package ru.job4j.dreamjob.config;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Properties;
 
 public class AppConfig {
@@ -22,8 +22,8 @@ public class AppConfig {
         this.initConfig();
     }
 
-    private synchronized void initConfig() {
-        try (InputStream in = new FileInputStream("db.properties")) {
+    private void initConfig() {
+        try (BufferedReader in = new BufferedReader(new FileReader("db.properties"))) {
             properties.load(in);
         } catch (Exception e) {
             e.printStackTrace();

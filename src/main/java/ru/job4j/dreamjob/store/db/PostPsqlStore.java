@@ -3,8 +3,8 @@ package ru.job4j.dreamjob.store.db;
 import ru.job4j.dreamjob.model.Post;
 import ru.job4j.dreamjob.store.Store;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,11 +25,13 @@ public class PostPsqlStore implements Store<Post> {
     }
 
     private void initTable() {
-        try (Statement stmt = connect().createStatement()) {
-            String text =
-                    Files.readAllLines(Path.of("./db/schema.sql")).stream()
-                            .collect(Collectors.joining(System.lineSeparator()));
-            stmt.execute(text);
+        try (Connection connection = connect();
+                Statement stmt = connection.createStatement()) {
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(getClass().getClassLoader().getResourceAsStream("schema.sql")))) {
+                String text = br.lines().collect(Collectors.joining(System.lineSeparator()));
+                stmt.execute(text);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,7 +40,8 @@ public class PostPsqlStore implements Store<Post> {
     @Override
     public Collection<Post> findAll() {
         Collection<Post> posts = new LinkedList<>();
-        try (PreparedStatement ps = connect().prepareStatement("select * from post;")) {
+        try (Connection connection = connect();
+                PreparedStatement ps = connection.prepareStatement("select * from post;")) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     posts.add(new Post(
@@ -57,7 +60,8 @@ public class PostPsqlStore implements Store<Post> {
     @Override
     public Post findById(int id) {
         Post post = new Post(0, "", "");
-        try (PreparedStatement ps = connect().prepareStatement("select * from post where id = ?;")) {
+        try (Connection connection = connect();
+                PreparedStatement ps = connection.prepareStatement("select * from post where id = ?;")) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -80,7 +84,8 @@ public class PostPsqlStore implements Store<Post> {
     }
 
     private Post update(Post model) {
-        try (PreparedStatement ps = connect().prepareStatement(
+        try (Connection connection = connect();
+                PreparedStatement ps = connection.prepareStatement(
                 "update post set name = ?, description = ? where id = ?;", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, model.getName());
             ps.setString(2, model.getDescription());
@@ -93,7 +98,8 @@ public class PostPsqlStore implements Store<Post> {
     }
 
     private Post save(Post model) {
-        try (PreparedStatement ps = connect().prepareStatement(
+        try (Connection connection = connect();
+                PreparedStatement ps = connection.prepareStatement(
                 "insert into post(name, description) values(?, ?);", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, model.getName());
             ps.setString(2, model.getDescription());
@@ -111,7 +117,8 @@ public class PostPsqlStore implements Store<Post> {
     @Override
     public boolean delete(int id) {
         boolean result = false;
-        try (PreparedStatement ps = connect().prepareStatement("delete from post where id = ?;")) {
+        try (Connection connection = connect();
+                PreparedStatement ps = connection.prepareStatement("delete from post where id = ?;")) {
             ps.setInt(1, id);
             result = ps.executeUpdate() > 0;
         } catch (Exception e) {
