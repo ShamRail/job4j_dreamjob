@@ -27,15 +27,19 @@
             <div class="card-header">
                 Авторизация
             </div>
-            <c:if test="${error != null}">
-                <div class="mx-auto">
-                    <p style="color: red;">
-                            ${error}
-                    </p>
-                </div>
-            </c:if>
             <div class="card-body">
-                <form action="<%=request.getContextPath()%>/auth.do" method="post">
+                <c:if test="${error != null}">
+                    <div class="mx-auto">
+                        <p style="color: red;">
+                                ${error}
+                        </p>
+                    </div>
+                </c:if>
+                <form action="<%=request.getContextPath()%>/reg.do" method="post">
+                    <div class="form-group">
+                        <label>Имя пользователя</label>
+                        <input type="text" class="form-control" name="name">
+                    </div>
                     <div class="form-group">
                         <label>Почта</label>
                         <input type="text" class="form-control" name="email">
@@ -44,11 +48,11 @@
                         <label>Пароль</label>
                         <input type="password" class="form-control" name="password">
                     </div>
-                    <button type="submit" class="btn btn-primary">Войти</button>
+                    <button type="submit" class="btn btn-primary">Регистрация</button>
                 </form>
             </div>
             <div class="mx-auto">
-                <a href='<c:url value="/reg.do"/>'>Нет учетной записи? Зарегистрироваться</a>
+                <a href='<c:url value="/auth.do"/>'>Есть учетная запись? Войти</a>
             </div>
         </div>
     </div>

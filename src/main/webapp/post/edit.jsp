@@ -50,7 +50,10 @@
                 <a class="nav-link" href='<c:url value="/candidates.do?edit=true" />'>Добавить кандидата</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href='<c:url value="/auth.do"/>'> <c:out value="${user.name}"/> | Выйти</a>
+                <a class="nav-link" href="#">${user.name}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='<c:url value="/auth.do?exit=true" />'>Выйти</a>
             </li>
         </ul>
     </div>

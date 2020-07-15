@@ -75,6 +75,27 @@ public class UserPsqlStore implements Store<User> {
         return user;
     }
 
+    public User findByEmailAndPassword(String email, String password) {
+        User user = new User();
+        try (Connection connection = POOL.getConnection();
+             PreparedStatement ps = connection.prepareStatement("select * from _user where email = ? and password = ?;")) {
+            ps.setString(1, email);
+            ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setEmail(rs.getString("email"));
+                    user.setName(rs.getString("name"));
+                    user.setPassword(rs.getString("password"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
     @Override
     public User saveOrUpdate(User model) {
         return model.getId() == 0 ? save(model) : update(model);
