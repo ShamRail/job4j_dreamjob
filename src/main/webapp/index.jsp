@@ -38,6 +38,9 @@
             <li class="nav-item">
                 <a class="nav-link" href='<c:url value="/candidates.do?edit=true" />'>Добавить кандидата</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href='<c:url value="/auth.do" />'>Войти</a>
+            </li>
         </ul>
     </div>
     <div class="row">
