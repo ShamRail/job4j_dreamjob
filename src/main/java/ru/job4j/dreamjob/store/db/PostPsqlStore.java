@@ -2,6 +2,7 @@ package ru.job4j.dreamjob.store.db;
 
 import ru.job4j.dreamjob.model.Post;
 import ru.job4j.dreamjob.store.Store;
+import ru.job4j.dreamjob.utils.ResourceScriptReader;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,12 +27,8 @@ public class PostPsqlStore implements Store<Post> {
 
     private void initTable() {
         try (Connection connection = connect();
-                Statement stmt = connection.createStatement()) {
-            try (BufferedReader br = new BufferedReader(
-                    new InputStreamReader(getClass().getClassLoader().getResourceAsStream("schema.sql")))) {
-                String text = br.lines().collect(Collectors.joining(System.lineSeparator()));
-                stmt.execute(text);
-            }
+             Statement stmt = connection.createStatement()) {
+            stmt.execute(ResourceScriptReader.read("init_post.sql"));
         } catch (Exception e) {
             e.printStackTrace();
         }
