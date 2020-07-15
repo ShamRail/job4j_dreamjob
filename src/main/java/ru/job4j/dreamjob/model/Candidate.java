@@ -10,6 +10,10 @@ public class Candidate {
 
     private String memo;
 
+    private Photo photo;
+
+    public Candidate() { }
+
     public Candidate(int id, String name) {
         this.id = id;
         this.name = name;
@@ -24,6 +28,14 @@ public class Candidate {
         this.id = id;
         this.name = name;
         this.memo = memo;
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
     public int getId() {

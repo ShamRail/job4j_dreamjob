@@ -1,6 +1,7 @@
 package ru.job4j.dreamjob.store.db;
 
 import ru.job4j.dreamjob.model.Candidate;
+import ru.job4j.dreamjob.model.Photo;
 import ru.job4j.dreamjob.store.Store;
 
 import java.io.BufferedReader;
@@ -12,9 +13,11 @@ import java.util.stream.Collectors;
 
 public class CandidatePsqlStore implements Store<Candidate> {
 
+    private static final ConnectionPool POOL = ConnectionPool.getPool();
+
     private static final CandidatePsqlStore STORE = new CandidatePsqlStore();
 
-    private static final ConnectionPool POOL = ConnectionPool.getPool();
+    private static final Store<Photo> PHOTO_STORE = PhotoPsqlStore.getStore();
 
     private CandidatePsqlStore() {
         initTable();
@@ -44,11 +47,16 @@ public class CandidatePsqlStore implements Store<Candidate> {
                 PreparedStatement ps = connection.prepareStatement("select * from candidate;")) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    posts.add(new Candidate(
+                    Candidate candidate = new Candidate(
                             rs.getInt("id"),
                             rs.getString("name"),
                             rs.getString("memo")
-                    ));
+                    );
+                    posts.add(candidate);
+                    Integer photoId = rs.getObject("photo_id", Integer.class);
+                    if (photoId != null) {
+                        candidate.setPhoto(PHOTO_STORE.findById(photoId));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -70,6 +78,10 @@ public class CandidatePsqlStore implements Store<Candidate> {
                             rs.getString("name"),
                             rs.getString("memo")
                     );
+                    Integer photoId = rs.getObject("photo_id", Integer.class);
+                    if (photoId != null) {
+                        candidate.setPhoto(PHOTO_STORE.findById(photoId));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -86,10 +98,14 @@ public class CandidatePsqlStore implements Store<Candidate> {
     private Candidate update(Candidate model) {
         try (Connection connection = connect();
                 PreparedStatement ps = connection.prepareStatement(
-                "update candidate set name = ?, memo = ? where id = ?;", Statement.RETURN_GENERATED_KEYS)) {
+                "update candidate set name = ?, memo = ?, photo_id = ? where id = ?;", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, model.getName());
             ps.setString(2, model.getMemo());
-            ps.setInt(3, model.getId());
+            ps.setInt(4, model.getId());
+            if (model.getPhoto() != null) {
+                PHOTO_STORE.saveOrUpdate(model.getPhoto());
+                ps.setInt(3, model.getPhoto().getId());
+            }
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,9 +116,14 @@ public class CandidatePsqlStore implements Store<Candidate> {
     private Candidate save(Candidate model) {
         try (Connection connection = connect();
                 PreparedStatement ps = connection.prepareStatement(
-                "insert into candidate(name, memo) values(?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+                "insert into candidate(name, memo, photo_id) values(?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, model.getName());
             ps.setString(2, model.getMemo());
+            ps.setNull(3, Types.INTEGER);
+            if (model.getPhoto() != null) {
+                Photo photo = PHOTO_STORE.saveOrUpdate(model.getPhoto());
+                ps.setInt(3, photo.getId());
+            }
             ps.execute();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
@@ -118,8 +139,12 @@ public class CandidatePsqlStore implements Store<Candidate> {
         boolean result = false;
         try (Connection connection = connect();
                 PreparedStatement ps = connection.prepareStatement("delete from candidate where id = ?;")) {
+            Candidate candidate = findById(id);
             ps.setInt(1, id);
             result = ps.executeUpdate() > 0;
+            if (candidate.getPhoto() != null) {
+                PHOTO_STORE.delete(candidate.getPhoto().getId());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

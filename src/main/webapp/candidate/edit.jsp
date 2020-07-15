@@ -21,6 +21,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <title>Работа мечты</title>
 </head>
 <body>
@@ -42,20 +44,57 @@
                 <% } %>
             </div>
             <div class="card-body">
-                <form action="${pageContext.request.contextPath}/candidates.do?id=<%=candidate.getId()%>" method="post">
-                    <div class="form-group">
-                        <label>Имя</label>
-                        <input type="text" class="form-control" name="name" value="<%=candidate.getName()%>">
+                <form class="row" action="${pageContext.request.contextPath}/candidates.do?id=<%=candidate.getId()%>" method="post" enctype="multipart/form-data">
+                    <div class="col-md-3">
+                        <% if (candidate.getPhoto() == null) { %>
+                            <img style="width:100%;" src="${pageContext.request.contextPath}/static/default.jpg" alt="img-fluid">
+                            <input type="file" name="photo" class="my-2"  alt="Photo" onchange="previewFile()">
+                        <% } else { %>
+                            <img style="width:100%;" src="${pageContext.request.contextPath}/download?name=<%=candidate.getPhoto().getName()%>" alt="img-fluid">
+                            <input type="file" name="photo" class="my-2"  alt="Photo" onchange="previewFile()">
+                        <% } %>
                     </div>
-                    <div class="form-group">
-                        <label>О себе</label>
-                        <input type="text" class="form-control" name="memo" value="<%=candidate.getMemo()%>">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label>Имя</label>
+                            <input type="text" class="form-control" name="name" value="<%=candidate.getName()%>">
+                        </div>
+                        <div class="form-group">
+                            <label>О себе</label>
+                            <input type="text" class="form-control" name="memo" value="<%=candidate.getMemo()%>">
+                        </div>
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-primary col-md-5 mx-2">Сохранить</button>
+                            <a href="${pageContext.request.contextPath}/candidates.do" class="btn btn-danger col-md-5">Отменить</a>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+    function previewFile(){
+
+        var preview = document.querySelector('img'); //selects the query named img
+        var previousSource = preview.getAttribute("src");
+        var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+        var reader  = new FileReader();
+
+        reader.onloadend = function () {
+            preview.src = reader.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file); //reads the data as a URL
+        } else {
+            preview.src = previousSource;
+        }
+    }
+
+</script>
+
 </body>
 </html>

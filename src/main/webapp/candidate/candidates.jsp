@@ -57,12 +57,24 @@
                     </thead>
                     <tbody>
                         <c:forEach var="can" items="${candidates}">
-                            <tr>
-                                <td>
+                            <tr class="row">
+                                <td class="col-md-3">
+                                    <c:if test="${can.photo == null}">
+                                        <img style="width:100%;" src='<c:url value="/static/default.jpg"/>' alt="img-fluid">
+                                    </c:if>
+                                    <c:if test="${can.photo != null}">
+                                        <img style="width:100%;" src='<c:url value="/download?name=${can.photo.name}"/>' alt="img-fluid">
+                                    </c:if>
+                                </td>
+                                <td class="col-md-9">
+                                    <c:out value="${can.name}"/>
                                     <a href='<c:url value="/candidates.do?edit=true&id=${can.id}"/>'>
                                         <i class="fa fa-edit mr-3"></i>
                                     </a>
-                                    <c:out value="${can.name}"/>
+                                    <br>
+                                    <p>
+                                        ${can.memo}
+                                    </p>
                                 </td>
                             </tr>
                         </c:forEach>
