@@ -11,7 +11,6 @@ public class DownloadServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String name = req.getParameter("name");
-        resp.setContentType("name=" + name);
         resp.setContentType("image/png; image/jpeg; image/svg+xml; image/webp");
         resp.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
         File file = new File("images" + File.separator + name);

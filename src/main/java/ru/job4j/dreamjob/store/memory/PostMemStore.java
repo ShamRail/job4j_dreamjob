@@ -17,9 +17,9 @@ public class PostMemStore implements Store<Post> {
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
 
     private PostMemStore() {
-        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Junior Java Job", "Some description ..."));
-        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Middle Java Job", "Some description ..."));
-        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Senior Java Job", "Some description ..."));
+//        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Junior Java Job", "Some description ..."));
+//        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Middle Java Job", "Some description ..."));
+//        posts.put(POST_ID.incrementAndGet(), new Post(POST_ID.get(), "Senior Java Job", "Some description ..."));
     }
 
     public static Store<Post> instOf() {
