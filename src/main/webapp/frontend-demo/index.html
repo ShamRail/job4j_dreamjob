@@ -14,14 +14,23 @@
 
     <script>
 
-        function validate() {
+        function addRow() {
             let firstName = $('#firstName-control').val();
             let lastName = $('#lastName-control').val();
             let gender = $('#gender-control').val();
             let description = $('#description-control').val();
             if (firstName === '' || lastName === '' || gender === '' || description === '') {
                 alert('Some of inputs are empty. Please, fill all of them');
+                return;
             }
+            $('tbody tr:last').after(
+                '<tr>' +
+                    '<td>' + firstName + '</td>' +
+                    '<td>' + lastName + '</td>' +
+                    '<td>' + gender + '</td>' +
+                    '<td>' + description + '</td>' +
+                '</tr>'
+            );
         }
 
     </script>
@@ -48,12 +57,12 @@
                     <input id = "description-control" class="form-control" type="text" name="description">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary" onclick="validate()">Save</button>
+                    <button type="reset" class="btn btn-primary" onclick="addRow()">Save</button>
                 </div>
             </form>
         </div>
     <div class="row">
-            <table class="table">
+            <table id="table" class="table">
                 <thead>
                 <tr>
                         <th>First name</th>
@@ -62,7 +71,9 @@
                         <th>Description</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    <tr class="hide"></tr>
+                </tbody>
             </table>
         </div>
 </div>
