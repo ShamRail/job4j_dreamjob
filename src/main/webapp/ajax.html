@@ -19,26 +19,28 @@
         <button type="button" class="btn btn-primary" onclick="sendGreeting()">Submit</button>
     </form>
 </div>
-</body>
-
 <script>
     function sendGreeting() {
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             url: 'http://localhost:8080/dreamjob/greet',
-            data: 'name=' + $('#exampleInputEmail1').val(),
-            dataType: 'text'
+            //data: "{name=\"" + $('#exampleInputEmail1').val() + "\"}",
+            data: JSON.stringify({
+                name: $('#exampleInputEmail1').val()
+            }),
+            contentType: 'application/json',
+            dataType: 'json'
         }).done(function(data) {
-            alert(data);
+            console.log(data.name);
             $('input').before(
                 '<p>' +
-                    data +
+                data.name +
                 '</p>'
             );
         }).fail(function(err){
-            alert(err);
+            console.log(err);
         });
     }
 </script>
-
+</body>
 </html>
