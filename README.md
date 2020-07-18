@@ -1,4 +1,6 @@
 # job4j_dreamjob
+[![Build Status](https://travis-ci.org/ShamRail/job4j_dreamjob.svg?branch=master)](https://travis-ci.org/ShamRail/job4j_dreamjob)
+
 This application demonstrates basic CRUD application for job searching.
 
 Functionality:
