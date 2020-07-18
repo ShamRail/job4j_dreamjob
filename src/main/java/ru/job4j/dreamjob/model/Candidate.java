@@ -12,6 +12,8 @@ public class Candidate {
 
     private Photo photo;
 
+    private Integer cityId;
+
     public Candidate() { }
 
     public Candidate(int id, String name) {
@@ -28,6 +30,13 @@ public class Candidate {
         this.id = id;
         this.name = name;
         this.memo = memo;
+    }
+
+    public Candidate(int id, String name, String memo, Integer cityId) {
+        this.id = id;
+        this.name = name;
+        this.memo = memo;
+        this.cityId = cityId;
     }
 
     public Photo getPhoto() {
@@ -60,6 +69,14 @@ public class Candidate {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
     }
 
     @Override

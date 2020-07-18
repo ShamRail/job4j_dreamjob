@@ -67,6 +67,8 @@ public class CandidateServlet extends HttpServlet {
                         candidate.setName(item.getString());
                     } else if ("memo".equals(name)) {
                         candidate.setMemo(item.getString());
+                    } else if ("city".equals(name)) {
+                        candidate.setCityId(Integer.valueOf(item.getString()));
                     }
                 }
             }

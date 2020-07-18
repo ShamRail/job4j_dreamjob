@@ -1,16 +1,15 @@
 package ru.job4j.dreamjob.store.db;
 
 import ru.job4j.dreamjob.model.Candidate;
+import ru.job4j.dreamjob.model.City;
 import ru.job4j.dreamjob.model.Photo;
 import ru.job4j.dreamjob.store.Store;
 import ru.job4j.dreamjob.utils.ResourceScriptReader;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 public class CandidatePsqlStore implements Store<Candidate> {
 
@@ -20,6 +19,8 @@ public class CandidatePsqlStore implements Store<Candidate> {
 
     private static final Store<Photo> PHOTO_STORE = PhotoPsqlStore.getStore();
 
+    private static final Store<City> CITY_STORE = CityPsqlStore.getStore();
+
     private CandidatePsqlStore() {
         initTable();
     }
@@ -27,7 +28,7 @@ public class CandidatePsqlStore implements Store<Candidate> {
     private void initTable() {
         try (Connection connection = connect();
                 Statement stmt = connection.createStatement()) {
-            stmt.execute(ResourceScriptReader.read("init_canditate.sql"));
+            stmt.execute(ResourceScriptReader.read("init_candidate.sql"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,7 +48,8 @@ public class CandidatePsqlStore implements Store<Candidate> {
                     Candidate candidate = new Candidate(
                             rs.getInt("id"),
                             rs.getString("name"),
-                            rs.getString("memo")
+                            rs.getString("memo"),
+                            rs.getObject("city_id", Integer.class)
                     );
                     posts.add(candidate);
                     Integer photoId = rs.getObject("photo_id", Integer.class);
@@ -73,7 +75,8 @@ public class CandidatePsqlStore implements Store<Candidate> {
                     candidate = new Candidate(
                             rs.getInt("id"),
                             rs.getString("name"),
-                            rs.getString("memo")
+                            rs.getString("memo"),
+                            rs.getObject("city_id", Integer.class)
                     );
                     Integer photoId = rs.getObject("photo_id", Integer.class);
                     if (photoId != null) {
@@ -95,10 +98,12 @@ public class CandidatePsqlStore implements Store<Candidate> {
     private Candidate update(Candidate model) {
         try (Connection connection = connect();
                 PreparedStatement ps = connection.prepareStatement(
-                "update candidate set name = ?, memo = ?, photo_id = ? where id = ?;", Statement.RETURN_GENERATED_KEYS)) {
+                "update candidate set name = ?, memo = ?, photo_id = ?, city_id = ? where id = ?;", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, model.getName());
             ps.setString(2, model.getMemo());
-            ps.setInt(4, model.getId());
+            ps.setNull(3, Types.INTEGER);
+            ps.setObject(4, model.getCityId(), Types.INTEGER);
+            ps.setInt(5, model.getId());
             if (model.getPhoto() != null) {
                 PHOTO_STORE.saveOrUpdate(model.getPhoto());
                 ps.setInt(3, model.getPhoto().getId());
@@ -113,10 +118,11 @@ public class CandidatePsqlStore implements Store<Candidate> {
     private Candidate save(Candidate model) {
         try (Connection connection = connect();
                 PreparedStatement ps = connection.prepareStatement(
-                "insert into candidate(name, memo, photo_id) values(?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+                "insert into candidate(name, memo, photo_id, city_id) values(?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, model.getName());
             ps.setString(2, model.getMemo());
             ps.setNull(3, Types.INTEGER);
+            ps.setObject(4, model.getCityId(), Types.INTEGER);
             if (model.getPhoto() != null) {
                 Photo photo = PHOTO_STORE.saveOrUpdate(model.getPhoto());
                 ps.setInt(3, photo.getId());
@@ -141,6 +147,9 @@ public class CandidatePsqlStore implements Store<Candidate> {
             result = ps.executeUpdate() > 0;
             if (candidate.getPhoto() != null) {
                 PHOTO_STORE.delete(candidate.getPhoto().getId());
+            }
+            if (candidate.getCityId() != null) {
+                CITY_STORE.delete(candidate.getCityId());
             }
         } catch (Exception e) {
             e.printStackTrace();

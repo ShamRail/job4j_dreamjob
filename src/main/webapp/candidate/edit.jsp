@@ -26,6 +26,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <title>Работа мечты</title>
 </head>
 <body>
@@ -88,6 +90,17 @@
                             <label>О себе</label>
                             <input type="text" class="form-control" name="memo" value="<%=candidate.getMemo()%>">
                         </div>
+                        <div class="form-group">
+                            <label>Город</label>
+                            <% if (candidate.getCityId() == null) { %>
+                                    <p id="city-id" hidden>0</p>
+                            <% } else { %>
+                                    <p id="city-id" hidden><%=candidate.getCityId()%></p>
+                            <% } %>
+                            <select id="city-control" name="city" class="form-control" required>
+
+                            </select>
+                        </div>
                         <div class="form-group row">
                             <button type="submit" class="btn btn-primary col-md-5 mx-2">Сохранить</button>
                             <a href="${pageContext.request.contextPath}/candidates.do" class="btn btn-danger col-md-5">Отменить</a>
@@ -100,6 +113,34 @@
 </div>
 
 <script>
+
+    $(document).ready(function () {
+        console.log("document ready!");
+        getCities();
+
+        function getCities() {
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8080/dreamjob/city',
+                dataType: 'json'
+            }).done(function(data) {
+                let count = data.length;
+                console.log("Cities successfully load! Count = " + count);
+                let cityID = $('#city-id').text();
+                console.log("City id = " + cityID);
+                for (let i = 0; i < count; i++) {
+                    let city = data[i];
+                    console.log(city.id + " " + city.name);
+                    let option = new Option(city.name, city.id, cityID == city.id, cityID == city.id);
+                    $(option).html(city.name);
+                    $('#city-control').append(option);
+                }
+            }).fail(function(err){
+                console.log("Something went wrong!");
+            });
+        }
+
+    });
 
     function previewFile(){
 

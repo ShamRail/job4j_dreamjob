@@ -81,4 +81,14 @@
         <url-pattern>/greet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CityServlet</servlet-name>
+        <servlet-class>ru.job4j.dreamjob.controller.CityController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CityServlet</servlet-name>
+        <url-pattern>/city</url-pattern>
+    </servlet-mapping>
+
 </web-app>
