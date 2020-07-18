@@ -1,0 +1,17 @@
+# используем язык java. Travis CI поддерживает другие языки тоже.
+language: java
+# используем режим обычного пользователя для сборки проекта.
+
+# version numbers
+jdk:
+  - openjdk14
+
+sudo: false
+
+# Отправлять уведомление на почтуmailto:youremail@smtp.ru(Изменить на свою) если сборка упала
+notifications:
+  email:
+    recipients:
+      - rail.shamsemukhametov@mail.ru
+    on_success: never # default: change
+    on_failure: always # default: always

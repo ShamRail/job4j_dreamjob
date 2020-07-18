@@ -23,7 +23,7 @@ import java.util.UUID;
 @MultipartConfig
 public class CandidateServlet extends HttpServlet {
 
-    private static final Store<Candidate> store = CandidatePsqlStore.getStore();
+    private static final Store<Candidate> STORE = CandidatePsqlStore.getStore();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -31,7 +31,7 @@ public class CandidateServlet extends HttpServlet {
         String path = edit != null ? "/candidate/edit.jsp" : "/candidate/candidates.jsp";
         req.setAttribute("user", req.getSession().getAttribute("user"));
         if (edit == null) {
-            req.setAttribute("candidates", store.findAll());
+            req.setAttribute("candidates", STORE.findAll());
         }
         req.getRequestDispatcher(path).forward(req, resp);
     }
@@ -78,7 +78,7 @@ public class CandidateServlet extends HttpServlet {
         if (req.getParameter("id") != null) {
             candidate.setId(Integer.parseInt(req.getParameter("id")));
         }
-        store.saveOrUpdate(candidate);
+        STORE.saveOrUpdate(candidate);
         resp.sendRedirect(req.getContextPath() + "/candidates.do");
     }
 
